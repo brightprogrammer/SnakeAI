@@ -154,5 +154,4 @@ void Snake::addBodyElement(){
 	colorGrad -= colorDecayFactor;
 	bodyElement.setPosition(snakeBody.back().getPosition());
 	snakeBody.push_back(bodyElement);
-	// updatePosition();
 }
