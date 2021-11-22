@@ -1,4 +1,5 @@
 #include "food.hpp"
+#include "math.hpp"
 
 // food constructor
 Food::Food() {
@@ -26,7 +27,11 @@ void Food::resetPosition() {
 }
 
 bool Food::checkEaten(const Snake &snake) {
-	if (food.getPosition() == snake.getPosition()) {
+	// if (food.getPosition() == snake.getPosition()) {
+	// 	return true;
+	// }
+
+	if(getDistance(food.getPosition(), snake.getPosition()) < 0.01f){
 		return true;
 	}
 

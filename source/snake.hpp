@@ -46,7 +46,7 @@ public:
 	void addBodyElement();
 
 	// check if snake is ok
-	bool isOk(){ return bIsOk; }
+	bool isOk = true;
 private:
 	sf::Image snakeBodyBlockImg;
 	sf::Texture snakeBodyTexture;
@@ -55,7 +55,6 @@ private:
 	std::vector<sf::Sprite> snakeBody;
 	sf::Color snakeHeadColor = sf::Color::Red;
 	Direction currentDirection;
-	bool bIsOk = true;
 };
 
 #endif//SNAKE_HPP

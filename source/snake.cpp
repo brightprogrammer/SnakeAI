@@ -14,10 +14,10 @@ Snake::Snake(){
 
 	// set initial position
 	sf::Vector2f randPos;
-	randPos.x = static_cast<size_t>(rand() % windowWidth);
-	randPos.x -= static_cast<size_t>(randPos.x) % gridSize;
-	randPos.y = static_cast<size_t>(rand() % windowHeight);
-	randPos.y -= static_cast<size_t>(randPos.y) % gridSize;
+	randPos.x = static_cast<uint32_t>(rand() % windowWidth);
+	randPos.x -= static_cast<uint32_t>(randPos.x) % gridSize;
+	randPos.y = static_cast<uint32_t>(rand() % windowHeight);
+	randPos.y -= static_cast<uint32_t>(randPos.y) % gridSize;
 	snakeHead.setPosition(randPos);
 
 	// set initial directions
@@ -95,7 +95,7 @@ void Snake::updatePosition(){
 	// check if snake ate itself
 	for(const auto& bodyElem : snakeBody){
 		if(bodyElem.getGlobalBounds().contains(snakeHead.getPosition())){
-			bIsOk = false;
+			isOk = false;
 			snakeBody.erase(snakeBody.begin()+1, snakeBody.end());
 		}
 	}

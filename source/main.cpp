@@ -63,9 +63,10 @@ int main(){
 		// draw score text
 		window.draw(scoreText);
 
-		if (!snake.isOk()) {
+		if (!snake.isOk){
 			score = 0;
 			scoreText.setString(std::to_string(score));
+			snake.isOk = true; // need to manually set this
 		}
 
 		// check if snake ate the food
