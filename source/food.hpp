@@ -2,25 +2,23 @@
 #define FOOD_HPP
 
 #include "common.hpp"
-#include "snake.hpp"
 
 class Food {
 public:
-  Food();
+	Food(const sf::Color& color = sf::Color::Green);
 
   // draw self to given window
-  void drawSelf(sf::RenderWindow &window);
+	void drawSelf(sf::RenderWindow &window);
 
-  // reset self position to a random one
-  void resetPosition();
+	// reset self position to a random one
+	void resetPosition();
 
-  // check whether snake had the food or not
-  bool checkEaten(const Snake &snake);
-
+	// get food position
+	const sf::Vector2f& getPosition();
 private:
-  sf::Image foodImg;
-  sf::Texture foodTexture;
-  sf::Sprite food;
+	sf::Image foodImg;
+	sf::Texture foodTexture;
+	sf::Sprite food;
 };
 
 #endif//FOOD_HPP

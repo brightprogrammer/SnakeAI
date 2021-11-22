@@ -9,6 +9,7 @@
 #define SNAKE_HPP
 
 #include "common.hpp"
+#include "food.hpp"
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <vector>
@@ -22,13 +23,16 @@ enum class Direction{
 class Snake {
 public:
 	// ctor
-	Snake();
+	Snake(Food& food);
 
 	// change snake position
 	void setPosition(float x, float y);
 
 	// get snake position
 	const sf::Vector2f&  getPosition() const;
+
+	// reflect snake back to window if snake crosses boundary
+	void reflectBackToWindow();
 
 	// move snake
 	void move(float xoff, float yoff);
@@ -45,16 +49,45 @@ public:
 	// add a body element to self
 	void addBodyElement();
 
-	// check if snake is ok
-	bool isOk = true;
+	// get score
+	size_t getScore() { return score; }
 private:
+	// food that snake needs to catch
+	Food& food;
+
+	// texture data
 	sf::Image snakeBodyBlockImg;
 	sf::Texture snakeBodyTexture;
+
+	// snake's head
 	sf::Sprite snakeHead;
+
+	// single body element
 	sf::Sprite bodyElement;
+
+	// body of snake
 	std::vector<sf::Sprite> snakeBody;
+
+	// color of snake's head
 	sf::Color snakeHeadColor = sf::Color::Red;
-	Direction currentDirection;
+
+	// begin direction
+	Direction currentDirection = Direction::Up;
+
+	// start with 0 score
+	size_t score = 0;
+
+	// initial size of sname
+	size_t snakeInitialSize = 1;
+
+	// if event was just handled now then we don't need to update
+	bool eventHandledJustNow = false;
+
+	// color gradient
+	float colorGrad = 1.0f;
+
+	// decay factor
+	float colorDecayFactor = 0.001f;
 };
 
 #endif//SNAKE_HPP

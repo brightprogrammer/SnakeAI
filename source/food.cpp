@@ -1,9 +1,10 @@
 #include "food.hpp"
 #include "math.hpp"
+#include <SFML/System/Vector2.hpp>
 
 // food constructor
-Food::Food() {
-	foodImg.create(gridSize, gridSize, sf::Color::Green);
+Food::Food(const sf::Color& color) {
+	foodImg.create(gridSize, gridSize, color);
 	foodTexture.loadFromImage(foodImg);
 	food.setTexture(foodTexture);
 
@@ -26,18 +27,7 @@ void Food::resetPosition() {
 	food.setPosition(randPos);
 }
 
-bool Food::checkEaten(const Snake &snake) {
-	// if (food.getPosition() == snake.getPosition()) {
-	// 	return true;
-	// }
-
-	if(getDistance(food.getPosition(), snake.getPosition()) < 0.01f){
-		return true;
-	}
-
-	// if(food.getGlobalBounds().contains(snake.getPosition())){
-	// 	return true;
-	// }
-
-	return false;
+// get food position
+const sf::Vector2f& Food::getPosition(){
+	return food.getPosition();
 }

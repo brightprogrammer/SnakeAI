@@ -3,14 +3,20 @@
 #include "snake.hpp"
 #include <SFML/System/Vector2.hpp>
 
-Snake::Snake(){
+sf::Color operator * (const sf::Color& color, float factor){
+	return sf::Color(color.r * factor, color.g * factor, color.b * factor, color.a);
+}
+
+Snake::Snake(Food& food) : food(food){
 	// create texture for snake head and body
 	snakeBodyBlockImg.create(gridSize, gridSize, sf::Color::White);
 	snakeBodyTexture.loadFromImage(snakeBodyBlockImg);
 
 	// create snake head sprite
 	snakeHead.setTexture(snakeBodyTexture);
-	snakeHead.setColor(snakeHeadColor);
+	snakeHead.setColor(snakeHeadColor * colorGrad);
+
+	colorGrad -= colorDecayFactor;
 
 	// set initial position
 	sf::Vector2f randPos;
@@ -23,13 +29,12 @@ Snake::Snake(){
 	// set initial directions
 	currentDirection = Direction::Up;
 
-	// setup snake body
-	size_t bodySize = 1;
-
 	// setup body element sprite
 	bodyElement.setTexture(snakeBodyTexture);
 
-	for(size_t i = 0; i < bodySize; i++){
+	for(size_t i = 0; i < snakeInitialSize; i++){
+		bodyElement.setColor(snakeHeadColor * colorGrad);
+		colorGrad -= colorDecayFactor;
 		bodyElement.setPosition(snakeHead.getPosition() + sf::Vector2f(0, stepSize * (i+1)));
 		snakeBody.emplace_back(bodyElement);
 	}
@@ -45,6 +50,26 @@ const sf::Vector2f& Snake::getPosition() const{
 	return snakeHead.getPosition();
 }
 
+// snap snake's position to grid
+void Snake::reflectBackToWindow(){
+	// check whether the snake crossed the boundary
+	const sf::Vector2f &snakePos = snakeHead.getPosition();
+	sf::Vector2f newPos = snakePos;
+
+	if (snakePos.x > windowWidth) {
+		newPos.x = 0;
+	} else if (snakePos.x < 0) {
+		newPos.x = windowWidth;
+	} else if (snakePos.y > windowHeight){
+		newPos.y = 0;
+	} else if (snakePos.y < 0) {
+		newPos.y = windowHeight;
+	}
+
+	// update position
+	snakeHead.setPosition(newPos);
+}
+
 // move snake
 void Snake::move(float xoff, float yoff){
 	// update body position
@@ -56,26 +81,34 @@ void Snake::move(float xoff, float yoff){
 	// update head position
 	snakeHead.move(sf::Vector2f(xoff, yoff));
 
-	// check whether the snake crossed the boundary
-	const sf::Vector2f& snakePos =  snakeHead.getPosition();
-	sf::Vector2f newPos = snakePos;
+	// reflect position to window
+	reflectBackToWindow();
 
-	if(snakePos.x > windowWidth){
-		newPos.x = gridSize;
-	}else if(snakePos.x < 0){
-		newPos.x = windowWidth - windowWidth % gridSize;
-	}else if(snakePos.y > windowHeight){
-		newPos.y = gridSize;
-	}else if(snakePos.y < 0){
-		newPos.y = windowHeight - windowHeight % gridSize;
+	// check if food was eaten after each move!
+	// it is necessary for the function to be present here!
+	if(snakeHead.getPosition() == food.getPosition()){
+		++score;
+		addBodyElement();
+		food.resetPosition();
 	}
 
-	// update position
-	snakeHead.setPosition(newPos);
+	// check if snake ate itself after each move
+	// it is necessary for this function to be present here!
+	for (const auto &bodyElem : snakeBody) {
+		if (bodyElem.getPosition() == snakeHead.getPosition()) {
+			score = 0;
+            snakeBody.erase(snakeBody.begin() + snakeInitialSize, snakeBody.end());
+		}
+	}
 }
 
 // update self position
 void Snake::updatePosition(){
+	// if(eventHandledJustNow){
+	// 	eventHandledJustNow = false;
+	// 	return;
+	// }
+
 	// keep moving snake body
 	switch (currentDirection) {
 	case Direction::Up:
@@ -91,24 +124,16 @@ void Snake::updatePosition(){
 		move(stepSize, 0);
 		break;
 	}
-
-	// check if snake ate itself
-	for(const auto& bodyElem : snakeBody){
-		if(bodyElem.getGlobalBounds().contains(snakeHead.getPosition())){
-			isOk = false;
-			snakeBody.erase(snakeBody.begin()+1, snakeBody.end());
-		}
-	}
 }
 
 // draw snake body ingiven window
 void Snake::drawSelf(sf::RenderWindow &window) {
-	updatePosition();
-
 	window.draw(snakeHead);
 	for(const auto& bodyElement : snakeBody){
 		window.draw(bodyElement);
 	}
+
+	updatePosition();
 }
 
 // handle events and move snake
@@ -127,9 +152,13 @@ void Snake::handleEvent(const sf::Event &event){
 		move(stepSize, 0);
 		currentDirection = Direction::Right;
 	}
+
+	eventHandledJustNow = true;
 }
 
 void Snake::addBodyElement(){
+	bodyElement.setColor(snakeHeadColor * colorGrad);
+	colorGrad -= colorDecayFactor;
 	snakeBody.push_back(bodyElement);
 	updatePosition();
 }

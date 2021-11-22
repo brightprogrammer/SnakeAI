@@ -8,8 +8,6 @@
 #include "snake.hpp"
 #include "food.hpp"
 
-// TODO : Fix the bug where the snake sometimes misses the food!
-
 int main(){
 	// where our rendered stuffs will appear
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), windowTitle);
@@ -18,11 +16,11 @@ int main(){
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(15);
 
-	// create snake
-	Snake snake;
-
 	// create food
 	Food food;
+
+	// create snake
+	Snake snake(food);
 
 	// keep track of score
 	size_t score = 0;
@@ -36,9 +34,9 @@ int main(){
 	scoreText.setFont(font);
 	scoreText.setString("0");
 	scoreText.setFillColor(sf::Color(0, 0, 0xff, 0x80));
-	scoreText.setCharacterSize(60);
-	scoreText.setPosition(windowWidth / 2.0 - scoreText.getLocalBounds().width / 2,
-						  windowHeight / 2.0 - scoreText.getLocalBounds().height / 2);
+	scoreText.setCharacterSize(200);
+	scoreText.setPosition(windowWidth / 2.0 - scoreText.getLocalBounds().width / 2.0,
+						  windowHeight / 2.0 - scoreText.getLocalBounds().height / 2.0);
 
 	// main game loop
 	while (window.isOpen()) {
@@ -51,8 +49,8 @@ int main(){
 			}
 
 			// handle keyboard events
-			if (event.type == sf::Event::KeyPressed) {
-				// update snake's position and stuffs
+			if (event.type == sf::Event::KeyPressed) { 
+		   		// update snake's position and stuffs
 				snake.handleEvent(event);
             }
 		}
@@ -61,25 +59,12 @@ int main(){
 		window.clear(sf::Color::Black);
 
 		// draw score text
+		scoreText.setString(std::to_string(snake.getScore()));
 		window.draw(scoreText);
 
-		if (!snake.isOk){
-			score = 0;
-			scoreText.setString(std::to_string(score));
-			snake.isOk = true; // need to manually set this
-		}
-
-		// check if snake ate the food
-		if (food.checkEaten(snake)) {
-			food.resetPosition();
-			snake.addBodyElement();
-			++score;
-			scoreText.setString(std::to_string(score));
-		}
-
-		// draw snake head
-		snake.drawSelf(window);
+		// draw snake and food
 		food.drawSelf(window);
+		snake.drawSelf(window);
 
 		// show rendered things
 		window.display();
