@@ -9,6 +9,7 @@
 #define SNAKE_HPP
 
 #include "common.hpp"
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <vector>
 
@@ -27,7 +28,7 @@ public:
 	void setPosition(float x, float y);
 
 	// get snake position
-	const sf::Vector2f getPosition() const;
+	const sf::Vector2f&  getPosition() const;
 
 	// move snake
 	void move(float xoff, float yoff);

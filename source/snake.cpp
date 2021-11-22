@@ -15,9 +15,9 @@ Snake::Snake(){
 	// set initial position
 	sf::Vector2f randPos;
 	randPos.x = static_cast<size_t>(rand() % windowWidth);
-	randPos.x += gridSize - static_cast<size_t>(randPos.x) % gridSize;
+	randPos.x -= static_cast<size_t>(randPos.x) % gridSize;
 	randPos.y = static_cast<size_t>(rand() % windowHeight);
-	randPos.y += gridSize - static_cast<size_t>(randPos.y) % gridSize;
+	randPos.y -= static_cast<size_t>(randPos.y) % gridSize;
 	snakeHead.setPosition(randPos);
 
 	// set initial directions
@@ -41,7 +41,7 @@ void Snake::setPosition(float x, float y) {
 }
 
 // get position of snake head
-const sf::Vector2f Snake::getPosition() const{
+const sf::Vector2f& Snake::getPosition() const{
 	return snakeHead.getPosition();
 }
 
@@ -61,13 +61,13 @@ void Snake::move(float xoff, float yoff){
 	sf::Vector2f newPos = snakePos;
 
 	if(snakePos.x > windowWidth){
-		newPos.x = 0;
+		newPos.x = gridSize;
 	}else if(snakePos.x < 0){
-		newPos.x = windowWidth;
+		newPos.x = windowWidth - windowWidth % gridSize;
 	}else if(snakePos.y > windowHeight){
-		newPos.y = 0;
+		newPos.y = gridSize;
 	}else if(snakePos.y < 0){
-		newPos.y = windowHeight;
+		newPos.y = windowHeight - windowHeight % gridSize;
 	}
 
 	// update position
