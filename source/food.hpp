@@ -5,9 +5,9 @@
 
 class Food {
 public:
-	Food(const sf::Color& color = sf::Color::Green);
+	Food(const sf::Color& color = sf::Color::Red);
 
-  // draw self to given window
+	// draw self to given window
 	void drawSelf(sf::RenderWindow &window);
 
 	// reset self position to a random one

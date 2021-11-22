@@ -8,6 +8,34 @@
 #include "snake.hpp"
 #include "food.hpp"
 
+static inline sf::Color screenClearColor = sf::Color(22, 4, 33);
+
+void displayScore(size_t score, sf::RenderWindow& window){
+	// font
+	static sf::Font font;
+	font.loadFromFile("../res/FATPIXEL.TTF");
+
+	static sf::Text scoreText;
+
+	// number of characters in
+	static uint32_t lastStringSize = 0;
+	std::string scoreString = std::to_string(score);
+	scoreText.setFont(font);
+	scoreText.setString(scoreString);
+	scoreText.setFillColor(sf::Color(55, 29, 99, 100));
+	scoreText.setCharacterSize(200);
+	if(lastStringSize != scoreString.size()){
+          // cache
+		lastStringSize = scoreString.size();
+
+		// change position
+		scoreText.setPosition((windowWidth / 2.0) - ((scoreText.getLocalBounds().width /**lastStringSize*/) / 2.0),
+							  (windowHeight / 2.0) - ((scoreText.getLocalBounds().height /**lastStringSize*/) / 2.0));
+	}
+
+	window.draw(scoreText);
+}
+
 int main(){
 	// where our rendered stuffs will appear
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), windowTitle);
@@ -21,22 +49,6 @@ int main(){
 
 	// create snake
 	Snake snake(food);
-
-	// keep track of score
-	size_t score = 0;
-
-	// font
-	sf::Font font;
-	font.loadFromFile("../res/FATPIXEL.TTF");
-
-	// score text to display score
-	sf::Text scoreText;
-	scoreText.setFont(font);
-	scoreText.setString("0");
-	scoreText.setFillColor(sf::Color(0, 0, 0xff, 0x80));
-	scoreText.setCharacterSize(200);
-	scoreText.setPosition(windowWidth / 2.0 - scoreText.getLocalBounds().width / 2.0,
-						  windowHeight / 2.0 - scoreText.getLocalBounds().height / 2.0);
 
 	// main game loop
 	while (window.isOpen()) {
@@ -56,11 +68,10 @@ int main(){
 		}
 
 		// clear color
-		window.clear(sf::Color::Black);
+		window.clear(screenClearColor);
 
-		// draw score text
-		scoreText.setString(std::to_string(snake.getScore()));
-		window.draw(scoreText);
+		// display score
+		displayScore(snake.getScore(), window);
 
 		// draw snake and food
 		food.drawSelf(window);

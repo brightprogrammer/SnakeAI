@@ -69,9 +69,9 @@ private:
 	std::vector<sf::Sprite> snakeBody;
 
 	// color of snake's head
-	sf::Color snakeHeadColor = sf::Color::Red;
+	sf::Color snakeHeadColor = sf::Color(47, 162, 250);
 
-	// begin direction
+        // begin direction
 	Direction currentDirection = Direction::Up;
 
 	// start with 0 score

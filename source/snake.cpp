@@ -104,11 +104,6 @@ void Snake::move(float xoff, float yoff){
 
 // update self position
 void Snake::updatePosition(){
-	// if(eventHandledJustNow){
-	// 	eventHandledJustNow = false;
-	// 	return;
-	// }
-
 	// keep moving snake body
 	switch (currentDirection) {
 	case Direction::Up:
@@ -152,13 +147,12 @@ void Snake::handleEvent(const sf::Event &event){
 		move(stepSize, 0);
 		currentDirection = Direction::Right;
 	}
-
-	eventHandledJustNow = true;
 }
 
 void Snake::addBodyElement(){
 	bodyElement.setColor(snakeHeadColor * colorGrad);
 	colorGrad -= colorDecayFactor;
+	bodyElement.setPosition(snakeBody.back().getPosition());
 	snakeBody.push_back(bodyElement);
-	updatePosition();
+	// updatePosition();
 }
